@@ -1,0 +1,8 @@
+.idea/*
+venv/*
+config.py
+bad_words.json
+bad_words
+good_words
+good_words.json
+database/db.json
