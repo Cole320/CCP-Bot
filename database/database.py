@@ -27,7 +27,11 @@ def addUser(user_id, name):
 
 def subtractSC(user_id, amount):
     cur_user = db.search(User.userID == str(user_id))[0]
-    db.update({'socialCredit': cur_user['socialCredit'] - amount}, User.userID == str(user_id))
+
+    if cur_user['socialCredit'] - amount < 0:
+        db.update({'socialCredit': 0}, User.userID == str(user_id))
+    else:
+        db.update({'socialCredit': cur_user['socialCredit'] - amount}, User.userID == str(user_id))
 
 
 def addSC(user_id, amount):

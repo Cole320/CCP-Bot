@@ -11,7 +11,7 @@ with open(config.good_words_list, 'r') as goodWordsJson:
 # Find a better way of doing this - nicole <3
 def isGood(message):
     for word in goodWords:
-        if word in message:
+        if word.lower() in message.lower():
             print('test')
             return goodWords[word]
 
@@ -20,7 +20,7 @@ def isGood(message):
 
 def isBad(message):
     for word in badWords:
-        if word in message:
+        if word.lower() in message.lower():
             return badWords[word]
 
     return False
