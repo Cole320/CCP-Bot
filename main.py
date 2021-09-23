@@ -42,6 +42,8 @@ async def on_message(message):
         database.addSC(message.author.id, is_good)
         database.goodWord(message.author.id)
 
+    database.addUser(message.author.id, message.author)
+
     await bot.process_commands(message)
 
 bot.run(config.token)
