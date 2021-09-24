@@ -11,39 +11,66 @@ print('Initializing Bot With Prefix: ' + config.prefix)
 database.initDB()
 
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send("pong")
+@bot.command(brief='Add SC to a mentioned user')
+async def addSC(message, amount):
+    if message.message.mentions[0]:
+        user = message.message.mentions[0]
+    else:
+        user = message.author
+        database.addUser(user.id)
+
+    database.addSC(user.id, int(amount))
+    await message.send(
+        'Social Credit Manually Increased for User: ' + str(message.author) + ' by ' + amount + ' points.')
 
 
-@bot.command()
-async def addSC(message):
-    database.addSC(message.author.id, 100)
-    print(message.author.id)
-    print(message.author.id)
-    await message.send("pong")
+@bot.command(brief='Remove SC from a mentioned user')
+async def subtractSC(message, amount):
+    if message.message.mentions[0]:
+        user = message.message.mentions[0]
+    else:
+        user = message.author
+        database.addUser(user.id)
+
+    database.subtractSC(user.id, int(amount))
+    await message.send(
+        'Social Credit Manually Decreased for User: ' + str(message.author) + ' by ' + amount + ' points.')
 
 
-@bot.command()
+@bot.command(brief='Retrieve and display SC for a mentioned user')
 async def fetchSC(message):
-    await message.send(database.fetchSC(message.author.id))
+    try:
+        if message.message.mentions:
+            embed = backend.fetchSCEmbed(message.message.mentions[0])
+        else:
+            embed = backend.fetchSCEmbed(message.author)
+
+
+    except IndexError:
+        database.addUser(message.message.mentions[0].id)
+        embed = backend.fetchSCEmbed(message.message.mentions[0])
+
+    await message.send(embed=embed)
 
 
 @bot.event
 async def on_message(message):
-    is_bad = backend.isBad(message.content)
-    is_good = backend.isGood(message.content)
+    demerit = backend.isBad(message.content)
+    merit = backend.isGood(message.content)
 
-    if is_bad:
-        database.subtractSC(message.author.id, is_bad)
+    if demerit:
+        database.subtractSC(message.author.id, demerit)
         database.badWord(message.author.id)
+        await message.add_reaction('❌')
 
-    if is_good:
-        database.addSC(message.author.id, is_good)
+    if merit:
+        database.addSC(message.author.id, merit)
         database.goodWord(message.author.id)
+        await message.add_reaction('✅')
 
-    database.addUser(message.author.id, message.author)
+    database.addUser(message.author.id)
 
     await bot.process_commands(message)
+
 
 bot.run(config.token)
