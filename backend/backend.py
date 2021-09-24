@@ -43,13 +43,9 @@ def fetchSCEmbed(author):
                      icon_url=author.avatar_url
                      )
 
-    embed.add_field(name='Social Credit:', value=database.fetchSC(author.id))
-    embed.add_field(name='\u200B', value='\u200B')
-    embed.add_field(name='\u200B', value='\u200B')
-    embed.add_field(name='Merits:', value=database.fetchMerits(author.id))
-    embed.add_field(name='\u200B', value='\u200B')
-    embed.add_field(name='\u200B', value='\u200B')
-    embed.add_field(name='Demerits:', value=database.fetchDemerits(author.id))
-    embed.set_footer(text='Always Remember: Glory to the CCP!')
+    embed.add_field(name='Social Credit:', value=str(database.fetchSC(author.id)), inline=False)
+    embed.add_field(name='Merits:', value=database.fetchMerits(author.id), inline=False)
+    embed.add_field(name='Demerits:', value=database.fetchDemerits(author.id), inline=False)
+    embed.set_footer(text='<' + ('-' * 5) + 'Always Remember: Glory to the CCP!' + ('-' * 5) + '>')
 
     return embed
